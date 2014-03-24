@@ -31,42 +31,9 @@ public class TestSimple {
 
     private final static Logger LOG = LoggerFactory.getLogger(TestSimple.class);
 
+    @Test
+    public void testRefrechToken(){
 
-    public String getAccessToken() throws IOException {
-        final String url = "http://localhost:8080/rest-oauth/oauth/token";
-
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-        // Use Chrome plugin - Advanced Rest Client
-        // username=user1&password=user1&client_id=client1&client_secret=client1&grant_type=password
-        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
-        valueMap.add("username", SampleUser.USERNAME);
-        valueMap.add("password", SampleUser.PASSWORD);
-
-        valueMap.add("client_id", SampleUser.USERNAME);
-        valueMap.add("client_secret", SampleUser.PASSWORD);
-
-        valueMap.add("grant_type", "password");
-
-        String response = restTemplate.postForObject(url, valueMap, String.class);
-        System.out.println(response);
-
-        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
-        LOG.info("responseMap:" + responseMap);
-
-        final String key_access_token = "access_token";
-        String access_token = responseMap.get(key_access_token);
-        assertNotNull(access_token);
-
-        LOG.info("Access token:" + access_token);
-        return access_token;
     }
 
     @Test
@@ -78,7 +45,6 @@ public class TestSimple {
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-
 
         final String accessToken = this.getAccessToken();
         assertNotNull(accessToken);
@@ -126,8 +92,7 @@ public class TestSimple {
         String response = restTemplate.postForObject(url, valueMap, String.class);
         System.out.println(response);
 
-        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {
-        });
+        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
         LOG.info("responseMap:" + responseMap);
 
         final String key_access_token = "access_token";
@@ -172,4 +137,48 @@ public class TestSimple {
 
     }
 
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
+    private String getAccessToken() throws IOException {
+        final String url = "http://localhost:8080/rest-oauth/oauth/token";
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        // Use Chrome plugin - Advanced Rest Client
+        // username=user1&password=user1&client_id=client1&client_secret=client1&grant_type=password
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
+        valueMap.add("username", SampleUser.USERNAME);
+        valueMap.add("password", SampleUser.PASSWORD);
+
+        valueMap.add("client_id", SampleUser.USERNAME);
+        valueMap.add("client_secret", SampleUser.PASSWORD);
+
+        valueMap.add("grant_type", "password");
+
+
+
+        String response = restTemplate.postForObject(url, valueMap, String.class);
+        LOG.info("response:" + response);
+
+        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
+        LOG.info("responseMap:" + responseMap);
+
+
+        final String key_access_token = "access_token";
+        String access_token = responseMap.get(key_access_token);
+        assertNotNull(access_token);
+
+        LOG.info("Access token:" + access_token);
+        return access_token;
+    }
 }

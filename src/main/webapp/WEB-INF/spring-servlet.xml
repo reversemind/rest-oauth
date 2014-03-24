@@ -49,6 +49,9 @@
 
 
 
+
+
+
     <bean id="logoutSuccessHandler" class="ru.ttk.baloo.rest.security.oauth.Logout">
         <property name="tokenStore" ref="tokenStore"></property>
     </bean>
@@ -85,6 +88,10 @@
     <bean id="clientDetails" class="ru.ttk.baloo.rest.security.oauth.SimpleClientDetailsService"/>
 
 
+
+
+
+
     <oauth:authorization-server
             client-details-service-ref="clientDetails"
             token-services-ref="tokenServices">
@@ -94,6 +101,9 @@
         <oauth:client-credentials/>
         <oauth:password authentication-manager-ref="userAuthenticationManager"/>
     </oauth:authorization-server>
+
+
+
 
     <authentication-manager id="userAuthenticationManager"
                             xmlns="http://www.springframework.org/schema/security">

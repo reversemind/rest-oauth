@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -12,8 +14,25 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Copyright (c) 2013-2014 Eugene Kalinin
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @Service
 public class SimpleClientDetailsService implements ClientDetailsService {
+
+    private final static Logger LOG = LoggerFactory.getLogger(SimpleClientDetailsService.class);
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
@@ -22,17 +41,16 @@ public class SimpleClientDetailsService implements ClientDetailsService {
             if (clientId.equals(SampleUser.USERNAME)) {
 
                 List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token", "client_credentials");
-
                 BaseClientDetails clientDetails = new BaseClientDetails();
                 // in our case username <=> clientId and clientSecret <=> password
                 clientDetails.setClientId(SampleUser.USERNAME);
                 clientDetails.setClientSecret(SampleUser.PASSWORD);
                 clientDetails.setAuthorizedGrantTypes(authorizedGrantTypes);
-//                clientDetails.setAuthorizedGrantTypes(Arrays.asList("password", "refresh_token", "client_credentials"));
-
                 return clientDetails;
             }
         }
+
+        LOG.warn("No client with requested id: " + clientId);
         throw new NoSuchClientException("No client with requested id: " + clientId);
     }
 
