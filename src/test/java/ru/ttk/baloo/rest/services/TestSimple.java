@@ -37,10 +37,13 @@ public class TestSimple {
     }
 
     @Test
-    public void testServiceMethod() throws IOException {
+    public void testServiceMethod() throws IOException, InterruptedException {
 
-        final String accessToken = this.getAccessToken();
+        String accessToken = "123";
+        accessToken = this.getAccessToken();
         assertNotNull(accessToken);
+
+        Thread.sleep(500);
 
         final String url = "http://localhost:8080/rest-oauth/resources/service/create";
 
@@ -63,7 +66,7 @@ public class TestSimple {
     }
 
     @Test
-    public void testLogout() throws IOException {
+    public void testLogout() throws IOException, InterruptedException {
 
         final String url = "http://localhost:8080/rest-oauth/logout";
 
@@ -75,6 +78,8 @@ public class TestSimple {
         final String accessToken = this.getAccessToken();
         assertNotNull(accessToken);
 
+
+        Thread.sleep(2000);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
