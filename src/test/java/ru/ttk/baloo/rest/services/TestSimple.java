@@ -37,6 +37,32 @@ public class TestSimple {
     }
 
     @Test
+    public void testServiceMethod() throws IOException {
+
+        final String accessToken = this.getAccessToken();
+        assertNotNull(accessToken);
+
+        final String url = "http://localhost:8080/rest-oauth/resources/service/create";
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+        String result = response.getBody();
+
+        LOG.info("Result:" + result);
+
+    }
+
+    @Test
     public void testLogout() throws IOException {
 
         final String url = "http://localhost:8080/rest-oauth/logout";
