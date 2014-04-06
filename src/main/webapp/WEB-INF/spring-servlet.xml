@@ -14,6 +14,7 @@
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd ">
 
+    <!--ACCORDING TO SPECIFICATION Token end point-->
     <http pattern="/oauth/token"
           create-session="stateless"
           authentication-manager-ref="authenticationManager"
@@ -45,11 +46,6 @@
         <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER"/>
         <access-denied-handler ref="oauthAccessDeniedHandler"/>
     </http>
-
-
-
-
-
 
 
     <bean id="logoutSuccessHandler" class="ru.ttk.baloo.rest.security.oauth.Logout">
@@ -88,10 +84,6 @@
     <bean id="clientDetails" class="ru.ttk.baloo.rest.security.oauth.SimpleClientDetailsService"/>
 
 
-
-
-
-
     <oauth:authorization-server
             client-details-service-ref="clientDetails"
             token-services-ref="tokenServices">
@@ -103,32 +95,23 @@
     </oauth:authorization-server>
 
 
-
-
-    <authentication-manager id="userAuthenticationManager"
-                            xmlns="http://www.springframework.org/schema/security">
+    <authentication-manager id="userAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
         <authentication-provider ref="customUserAuthenticationProvider"/>
     </authentication-manager>
 
-    <bean id="customUserAuthenticationProvider"
-          class="ru.ttk.baloo.rest.security.oauth.CustomUserAuthenticationProvider">
-    </bean>
+    <bean id="customUserAuthenticationProvider" class="ru.ttk.baloo.rest.security.oauth.CustomUserAuthenticationProvider" />
 
+    <oauth:resource-server id="resourceServerFilter" resource-id="ttkrest" token-services-ref="tokenServices"/>
 
-    <oauth:resource-server id="resourceServerFilter"
-                           resource-id="ttkrest" token-services-ref="tokenServices"/>
-
-    <bean id="tokenStore"
-          class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore"/>
+    <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore"/>
 
     <bean id="tokenServices"
           class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
         <property name="tokenStore" ref="tokenStore"/>
         <property name="supportRefreshToken" value="true"/>
-        <property name="accessTokenValiditySeconds" value="1" />
+        <property name="accessTokenValiditySeconds" value="30"/>
         <property name="clientDetailsService" ref="clientDetails"/>
     </bean>
-
 
     <mvc:annotation-driven/>
     <!-- Declares explicit support for annotation-driven MVC controllers  @RequestMapping, @Controller -->

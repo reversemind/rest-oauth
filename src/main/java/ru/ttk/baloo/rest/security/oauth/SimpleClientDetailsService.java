@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2013-2014 Eugene Kalinin
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ru.ttk.baloo.rest.security.oauth;
 
 import java.util.ArrayList;
@@ -14,21 +29,6 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 
-/**
- * Copyright (c) 2013-2014 Eugene Kalinin
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 @Service
 public class SimpleClientDetailsService implements ClientDetailsService {
 
@@ -40,12 +40,14 @@ public class SimpleClientDetailsService implements ClientDetailsService {
         if (StringUtils.isNotBlank(clientId)) {
             if (clientId.equals(SampleUser.USERNAME)) {
 
-                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token", "client_credentials");
+//                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token", "client_credentials");
+                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token");
                 BaseClientDetails clientDetails = new BaseClientDetails();
                 // in our case username <=> clientId and clientSecret <=> password
                 clientDetails.setClientId(SampleUser.USERNAME);
                 clientDetails.setClientSecret(SampleUser.PASSWORD);
                 clientDetails.setAuthorizedGrantTypes(authorizedGrantTypes);
+
                 return clientDetails;
             }
         }

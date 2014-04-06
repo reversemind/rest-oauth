@@ -1,8 +1,8 @@
 package ru.ttk.baloo.rest.services;
 
-
 import static junit.framework.Assert.*;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -21,6 +21,7 @@ import ru.ttk.baloo.rest.security.oauth.Logout;
 import ru.ttk.baloo.rest.security.oauth.SampleUser;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class TestSimple {
     private final static Logger LOG = LoggerFactory.getLogger(TestSimple.class);
 
     @Test
-    public void testRefrechToken(){
+    public void testRefreshToken(){
 
     }
 
@@ -107,20 +108,28 @@ public class TestSimple {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", "Basic " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
+
+        LOG.info("base 64 = " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
 
         // Use Chrome plugin - Advanced Rest Client
         // username=user1&password=user1&client_id=client1&client_secret=client1&grant_type=password
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
         valueMap.add("username", SampleUser.USERNAME);
         valueMap.add("password", SampleUser.PASSWORD);
-
-        valueMap.add("client_id", SampleUser.USERNAME);
-        valueMap.add("client_secret", SampleUser.PASSWORD);
+////
+//        valueMap.add("client_id", SampleUser.USERNAME);
+//        valueMap.add("client_secret", SampleUser.PASSWORD);
 
         valueMap.add("grant_type", "password");
 
-        String response = restTemplate.postForObject(url, valueMap, String.class);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(valueMap, headers);
+
+
+//        String response = restTemplate.postForObject(url, valueMap, String.class);
+        String response = restTemplate.postForObject(url, request, String.class);
         System.out.println(response);
 
         Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});

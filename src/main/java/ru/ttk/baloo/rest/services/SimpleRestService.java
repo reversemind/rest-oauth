@@ -1,13 +1,3 @@
-package ru.ttk.baloo.rest.services;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-
 /**
  * Copyright (c) 2013-2014 Eugene Kalinin
  * <p/>
@@ -23,11 +13,21 @@ import org.springframework.stereotype.Controller;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package ru.ttk.baloo.rest.services;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+
 @Component
 @Path("/service")
-public class Simple {
+public class SimpleRestService {
 
-    private final static Logger LOG = LoggerFactory.getLogger(Simple.class);
+    private final static Logger LOG = LoggerFactory.getLogger(SimpleRestService.class);
 
     @GET
 	@Path("/create")

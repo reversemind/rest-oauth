@@ -1,15 +1,3 @@
-package ru.ttk.baloo.rest.security.oauth;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-
 /**
  * Copyright (c) 2013-2014 Eugene Kalinin
  * <p/>
@@ -25,17 +13,45 @@ import org.springframework.security.core.GrantedAuthority;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package ru.ttk.baloo.rest.security.oauth;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+
+/**
+ *
+ */
 public class CustomUserAuthenticationProvider implements AuthenticationProvider {
+
+    private final static Logger LOG = LoggerFactory.getLogger(CustomUserAuthenticationProvider.class);
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        if (authentication.getPrincipal().equals(SampleUser.USERNAME) && authentication.getCredentials().equals(SampleUser.PASSWORD)) {
-            List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-            CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), grantedAuthorities);
-            return auth;
-        } else {
-            throw new BadCredentialsException("Bad User Credentials");
+
+        LOG.info("Going to process authentication: " + authentication);
+        if (authentication != null && authentication.getPrincipal() != null && authentication.getCredentials() != null){
+
+            LOG.info("authentication principal: " + authentication.getPrincipal());
+            LOG.info("authentication credentials: " + authentication.getCredentials());
+
+            if (authentication.getPrincipal().equals(SampleUser.USERNAME) && authentication.getCredentials().equals(SampleUser.PASSWORD)) {
+                List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+                CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), grantedAuthorities);
+                return auth;
+            }
+
         }
+
+        throw new BadCredentialsException("Bad User Credentials");
     }
 
     @Override

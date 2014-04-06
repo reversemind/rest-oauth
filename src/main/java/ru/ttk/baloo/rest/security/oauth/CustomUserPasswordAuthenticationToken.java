@@ -1,11 +1,3 @@
-package ru.ttk.baloo.rest.security.oauth;
-
-
-import java.util.Collection;
-
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-
 /**
  * Copyright (c) 2013-2014 Eugene Kalinin
  * <p/>
@@ -21,6 +13,14 @@ import org.springframework.security.core.GrantedAuthority;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package ru.ttk.baloo.rest.security.oauth;
+
+
+import java.util.Collection;
+
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+
 public class CustomUserPasswordAuthenticationToken extends AbstractAuthenticationToken {
 
     private final Object principal;
