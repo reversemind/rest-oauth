@@ -15,7 +15,6 @@
  */
 package ru.ttk.baloo.rest.security.oauth;
 
-
 import java.util.Collection;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;

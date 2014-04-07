@@ -1,7 +1,3 @@
-package ru.ttk.baloo.rest.security.oauth;
-
-import java.io.Serializable;
-
 /**
  * Copyright (c) 2013-2014 Eugene Kalinin
  * <p/>
@@ -16,6 +12,13 @@ import java.io.Serializable;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+package ru.ttk.baloo.rest.security.oauth;
+
+import java.io.Serializable;
+
+/**
+ *
  */
 public class SampleUser implements Serializable {
 

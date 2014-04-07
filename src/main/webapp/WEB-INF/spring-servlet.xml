@@ -4,11 +4,14 @@
        xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
        xmlns:sec="http://www.springframework.org/schema/security"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
         http://www.springframework.org/schema/security/oauth2
         http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd
 		http://www.springframework.org/schema/beans
@@ -112,6 +115,11 @@
         <property name="accessTokenValiditySeconds" value="30"/>
         <property name="clientDetailsService" ref="clientDetails"/>
     </bean>
+
+
+    <context:annotation-config />
+    <!--<context:component-scan base-package="ru.ttk.baloo"/>-->
+    <bean id="remoteUserFinder" class="ru.ttk.baloo.rest.services.RemoteUserFinderStub" />
 
     <mvc:annotation-driven/>
     <!-- Declares explicit support for annotation-driven MVC controllers  @RequestMapping, @Controller -->

@@ -3,11 +3,14 @@ package ru.ttk.baloo.rest.services;
 import static junit.framework.Assert.*;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -21,20 +24,41 @@ import ru.ttk.baloo.rest.security.oauth.Logout;
 import ru.ttk.baloo.rest.security.oauth.SampleUser;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
 
 /**
  *
  */
-public class TestSimple {
+public class SimpleOAuthIntegrationTest {
 
-    private final static Logger LOG = LoggerFactory.getLogger(TestSimple.class);
+    private final static Logger LOG = LoggerFactory.getLogger(SimpleOAuthIntegrationTest.class);
 
-    @Test
-    public void testRefreshToken(){
+    private Server server;
 
+    final int PORT_NUMBER = 18181;
+
+    @Before
+    public void init() throws Exception {
+        // rest-oauth-0.0.1-SNAPSHOT.war
+
+        server = new Server(PORT_NUMBER);
+        server.setStopAtShutdown(true);
+        WebAppContext webAppContext = new WebAppContext();
+        webAppContext.setContextPath("/rest-oauth");
+        webAppContext.setResourceBase("src/main/webapp");
+        webAppContext.setClassLoader(getClass().getClassLoader());
+        server.addHandler(webAppContext);
+
+        server.start();
+
+    }
+
+    @After
+    public void destroy() throws Exception {
+        if (server != null) {
+            server.stop();
+        }
     }
 
     @Test
@@ -46,7 +70,7 @@ public class TestSimple {
 
         Thread.sleep(500);
 
-        final String url = "http://localhost:8080/rest-oauth/resources/service/create";
+        final String url = "http://localhost:" + PORT_NUMBER + "/rest-oauth/resources/service/create";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -69,7 +93,7 @@ public class TestSimple {
     @Test
     public void testLogout() throws IOException, InterruptedException {
 
-        final String url = "http://localhost:8080/rest-oauth/logout";
+        final String url = "http://localhost:" + PORT_NUMBER + "/rest-oauth/logout";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -99,7 +123,7 @@ public class TestSimple {
     @Test
     public void testGetAccessToken() throws IOException {
 
-        final String url = "http://localhost:8080/rest-oauth/oauth/token";
+        final String url = "http://localhost:" + PORT_NUMBER + "/rest-oauth/oauth/token";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -109,7 +133,7 @@ public class TestSimple {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 //        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add("Authorization", "Basic " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
+//        headers.add("Authorization", "Basic " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
 
         LOG.info("base 64 = " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
 
@@ -119,8 +143,8 @@ public class TestSimple {
         valueMap.add("username", SampleUser.USERNAME);
         valueMap.add("password", SampleUser.PASSWORD);
 ////
-//        valueMap.add("client_id", SampleUser.USERNAME);
-//        valueMap.add("client_secret", SampleUser.PASSWORD);
+        valueMap.add("client_id", SampleUser.USERNAME);
+        valueMap.add("client_secret", SampleUser.PASSWORD);
 
         valueMap.add("grant_type", "password");
 
@@ -132,13 +156,15 @@ public class TestSimple {
         String response = restTemplate.postForObject(url, request, String.class);
         System.out.println(response);
 
-        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
+        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {
+        });
         LOG.info("responseMap:" + responseMap);
 
         final String key_access_token = "access_token";
         String access_token = responseMap.get(key_access_token);
         assertNotNull(access_token);
 
+        LOG.info("access_token --" + access_token);
         System.out.println(access_token);
 
         /*
@@ -178,12 +204,11 @@ public class TestSimple {
     }
 
     /**
-     *
      * @return
      * @throws IOException
      */
     private String getAccessToken() throws IOException {
-        final String url = "http://localhost:8080/rest-oauth/oauth/token";
+        final String url = "http://localhost:" + PORT_NUMBER + "/rest-oauth/oauth/token";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -206,11 +231,11 @@ public class TestSimple {
         valueMap.add("grant_type", "password");
 
 
-
         String response = restTemplate.postForObject(url, valueMap, String.class);
         LOG.info("response:" + response);
 
-        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
+        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {
+        });
         LOG.info("responseMap:" + responseMap);
 
 

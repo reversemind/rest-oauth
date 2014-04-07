@@ -26,31 +26,44 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
+import ru.ttk.baloo.rest.services.IRemoteUser;
+import ru.ttk.baloo.rest.services.IRemoteUserFinder;
+import ru.ttk.baloo.rest.services.RemoteUser;
+
+import javax.inject.Inject;
 
 /**
  *
  */
+@Service
 public class CustomUserAuthenticationProvider implements AuthenticationProvider {
 
     private final static Logger LOG = LoggerFactory.getLogger(CustomUserAuthenticationProvider.class);
+
+    @Inject
+    IRemoteUserFinder remoteServiceFindUser;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         LOG.info("Going to process authentication: " + authentication);
-        if (authentication != null && authentication.getPrincipal() != null && authentication.getCredentials() != null){
+        if (authentication != null && authentication.getPrincipal() != null && authentication.getCredentials() != null) {
 
             LOG.info("authentication principal: " + authentication.getPrincipal());
             LOG.info("authentication credentials: " + authentication.getCredentials());
 
-            if (authentication.getPrincipal().equals(SampleUser.USERNAME) && authentication.getCredentials().equals(SampleUser.PASSWORD)) {
+            /*
+             * authentication.getPrincipal() <=> userName
+             * authentication.getCredentials() <=> password
+             */
+            IRemoteUser remoteUser = remoteServiceFindUser.findUser(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
+            if (remoteUser != null) {
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
                 CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), grantedAuthorities);
                 return auth;
             }
-
         }
-
         throw new BadCredentialsException("Bad User Credentials");
     }
 
