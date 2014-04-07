@@ -15,9 +15,6 @@
  */
 package ru.ttk.baloo.rest.security.oauth;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +26,10 @@ import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 import ru.ttk.baloo.rest.services.IRemoteUser;
 import ru.ttk.baloo.rest.services.IRemoteUserFinder;
-import ru.ttk.baloo.rest.services.RemoteUser;
 
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class SimpleClientDetailsService implements ClientDetailsService {
@@ -47,7 +45,7 @@ public class SimpleClientDetailsService implements ClientDetailsService {
         if (StringUtils.isNotBlank(clientId)) {
 
             IRemoteUser remoteUser = remoteUserFinder.findUser(clientId);
-            if(remoteUser != null){
+            if (remoteUser != null) {
                 //                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token", "client_credentials");
                 List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token");
                 BaseClientDetails clientDetails = new BaseClientDetails();

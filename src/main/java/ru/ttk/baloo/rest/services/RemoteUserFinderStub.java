@@ -25,7 +25,7 @@ import ru.ttk.baloo.rest.security.oauth.SampleUser;
  * Remote emulation
  */
 @Service
-public class RemoteUserFinderStub implements IRemoteUserFinder{
+public class RemoteUserFinderStub implements IRemoteUserFinder {
 
     private final static Logger LOG = LoggerFactory.getLogger(RemoteUserFinderStub.class);
 

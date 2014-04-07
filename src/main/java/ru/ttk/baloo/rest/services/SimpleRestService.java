@@ -15,12 +15,12 @@
  */
 package ru.ttk.baloo.rest.services;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
 
 @Component
@@ -30,21 +30,21 @@ public class SimpleRestService {
     private final static Logger LOG = LoggerFactory.getLogger(SimpleRestService.class);
 
     @GET
-	@Path("/create")
-	public String createInfo(){
-		return "/service/create";
-	}
-	
-	@GET
-	@Path("/get")
-	public String getMyInfo(){
-		return "/service/get";
-	}
+    @Path("/create")
+    public String createInfo() {
+        return "/service/create";
+    }
 
-	@GET
-	@Path("/update")
-	public String updateMyInfo(){
-		return "/service/update";
-	}
+    @GET
+    @Path("/get")
+    public String getMyInfo() {
+        return "/service/get";
+    }
+
+    @GET
+    @Path("/update")
+    public String updateMyInfo() {
+        return "/service/update";
+    }
 
 }

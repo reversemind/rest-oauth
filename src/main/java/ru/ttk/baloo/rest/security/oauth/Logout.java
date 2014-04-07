@@ -15,19 +15,17 @@
  */
 package ru.ttk.baloo.rest.security.oauth;
 
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.provider.token.InMemoryTokenStore;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.provider.token.InMemoryTokenStore;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import java.io.IOException;
 
 /**
  *
@@ -51,7 +49,7 @@ public class Logout implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest paramHttpServletRequest,
                                 HttpServletResponse paramHttpServletResponse,
-                                Authentication paramAuthentication) throws IOException,ServletException {
+                                Authentication paramAuthentication) throws IOException, ServletException {
         removeAccess(paramHttpServletRequest);
         paramHttpServletResponse.getOutputStream().write(LOGOUT_MESSAGE.getBytes());
     }

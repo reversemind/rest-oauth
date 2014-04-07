@@ -1,8 +1,5 @@
 package ru.ttk.baloo.rest.services;
 
-import org.apache.commons.lang3.StringUtils;
-import ru.ttk.baloo.rest.security.oauth.SampleUser;
-
 import java.io.Serializable;
 
 /**
