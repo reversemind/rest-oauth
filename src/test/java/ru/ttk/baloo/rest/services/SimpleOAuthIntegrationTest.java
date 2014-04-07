@@ -51,7 +51,6 @@ public class SimpleOAuthIntegrationTest {
         server.addHandler(webAppContext);
 
         server.start();
-
     }
 
     @After
@@ -133,7 +132,7 @@ public class SimpleOAuthIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 //        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-//        headers.add("Authorization", "Basic " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
+        headers.add("Authorization", "Basic " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
 
         LOG.info("base 64 = " + new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone()));
 
@@ -143,8 +142,8 @@ public class SimpleOAuthIntegrationTest {
         valueMap.add("username", SampleUser.USERNAME);
         valueMap.add("password", SampleUser.PASSWORD);
 ////
-        valueMap.add("client_id", SampleUser.USERNAME);
-        valueMap.add("client_secret", SampleUser.PASSWORD);
+//        valueMap.add("client_id", SampleUser.USERNAME);
+//        valueMap.add("client_secret", SampleUser.PASSWORD);
 
         valueMap.add("grant_type", "password");
 
