@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:sec="http://www.springframework.org/schema/security"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -15,7 +16,9 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd
 		http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd ">
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/data/jpa
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <!--ACCORDING TO SPECIFICATION Token end point-->
     <http pattern="/oauth/token"
@@ -125,5 +128,45 @@
     <!-- Declares explicit support for annotation-driven MVC controllers  @RequestMapping, @Controller -->
 
     <mvc:default-servlet-handler/>
+
+
+
+    <!--SPRING DATA JPA-->
+    <jpa:repositories base-package="ru.ttk.baloo.rest.repository"/>
+
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" >
+        <property name="driverClass" value="org.postgresql.Driver" />
+        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/test_rest" />
+        <property name="username" value="test" />
+        <property name="password" value="test" />
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!--for J2EE use http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/orm.html#orm-jpa-->
+    <!--<jee:jndi-lookup id="myEmf" jndi-name="persistence/myPersistenceUnit"/>-->
+
+    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" >-->
+        <!--<property name="dataSource" ref="dataSource" />-->
+        <!--<property name="persistenceProviderClass" value="org.hibernate.ejb.HibernatePersistence" />-->
+        <!--<property name="packagesToScan" value="ru.ttk.baloo.rest.model" />-->
+        <!--<property name="loadTimeWeaver">-->
+            <!--<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="generateDdl" value="true" />
+                <property name="database" value="POSTGRESQL" />
+                <property name="showSql" value="true" />
+            </bean>
+        </property>
+        <property name="persistenceUnitName" value="JpaPersistenceUnit" />
+    </bean>
 
 </beans>

@@ -25,12 +25,16 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 import org.springframework.security.oauth2.provider.token.InMemoryTokenStore;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import ru.ttk.baloo.rest.model.User;
+import ru.ttk.baloo.rest.repository.UserRepository;
 
+import javax.inject.Inject;
 import javax.security.auth.login.AccountExpiredException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 import static ru.ttk.baloo.rest.security.oauth.OAuthUtils.*;
 
@@ -40,6 +44,10 @@ import static ru.ttk.baloo.rest.security.oauth.OAuthUtils.*;
 public class Logout implements LogoutSuccessHandler {
 
     private final static Logger LOG = LoggerFactory.getLogger(Logout.class);
+
+
+    @Inject
+    UserRepository userRepository;
 
     private InMemoryTokenStore tokenStore;
 
@@ -55,6 +63,8 @@ public class Logout implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
                                 Authentication authentication) throws IOException, ServletException {
+        List<User> users = userRepository.findAll();
+        LOG.info("users:" + users);
 
         this.removeAccess(httpServletRequest);
         httpServletResponse.getOutputStream().write(BYE_MESSAGE.getBytes());
