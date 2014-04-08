@@ -30,6 +30,8 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.ttk.baloo.rest.security.oauth.OAuthUtils.WRONG_USER_CREDENTIALS;
+
 /**
  *
  */
@@ -61,7 +63,7 @@ public class CustomUserAuthenticationProvider implements AuthenticationProvider 
                 return auth;
             }
         }
-        throw new BadCredentialsException("Bad User Credentials");
+        throw new BadCredentialsException(WRONG_USER_CREDENTIALS);
     }
 
     @Override
