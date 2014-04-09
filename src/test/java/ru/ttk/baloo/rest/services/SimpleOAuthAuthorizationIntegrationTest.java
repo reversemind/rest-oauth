@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import ru.ttk.baloo.rest.dto.HouseDTO;
 import ru.ttk.baloo.rest.security.oauth.Logout;
 import ru.ttk.baloo.rest.security.oauth.OAuthUtils;
 import ru.ttk.baloo.rest.security.oauth.SampleUser;
@@ -61,6 +62,39 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         if (server != null) {
             server.stop();
         }
+    }
+
+    @Test
+    public void testPostJSON2REST() throws IOException, InterruptedException {
+        String accessToken = "123";
+        accessToken = this.authorizeAndGetAccessToken();
+        assertNotNull(accessToken);
+
+        Thread.sleep(500);
+
+
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/create/house";
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE + accessToken);
+
+        HouseDTO houseDTO = new HouseDTO();
+        houseDTO.setUuid("UUID");
+        houseDTO.setNumber("NUMBER");
+
+        HttpEntity<HouseDTO> request = new HttpEntity<HouseDTO>(houseDTO, headers);
+
+        String response = restTemplate.postForObject(url, request, String.class);
+        String result = response;
+
+        LOG.info("Result:" + result);
     }
 
     @Test

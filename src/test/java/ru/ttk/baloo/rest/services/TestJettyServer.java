@@ -15,7 +15,7 @@ public class TestJettyServer {
     public void testRunServer() throws Exception {
         // rest-oauth-0.0.1-SNAPSHOT.war
 
-        server = new Server(8080);
+        server = new Server(18181);
         server.setStopAtShutdown(true);
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setContextPath("/rest-oauth");
@@ -24,7 +24,7 @@ public class TestJettyServer {
         server.addHandler(webAppContext);
         server.start();
 
-        Thread.sleep(30000);
+        Thread.sleep(10 * 60 * 1000);
 
         server.stop();
     }

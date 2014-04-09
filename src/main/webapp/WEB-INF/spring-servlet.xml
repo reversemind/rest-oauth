@@ -115,13 +115,15 @@
           class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
         <property name="tokenStore" ref="tokenStore"/>
         <property name="supportRefreshToken" value="true"/>
-        <property name="accessTokenValiditySeconds" value="30"/>
+        <property name="accessTokenValiditySeconds" value="900"/>
         <property name="clientDetailsService" ref="clientDetails"/>
     </bean>
 
 
+    <bean id="sController" class="ru.ttk.baloo.rest.services.SController" />
+
     <context:annotation-config />
-    <!--<context:component-scan base-package="ru.ttk.baloo"/>-->
+    <!--<context:component-scan base-package="ru.ttk.baloo.rest.services"/>-->
     <bean id="remoteUserFinder" class="ru.ttk.baloo.rest.services.RemoteUserFinderStub" />
 
     <mvc:annotation-driven/>
