@@ -3,7 +3,7 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
              http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
 
-    <persistence-unit name="JpaPersistenceUnitDefault" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="JpaPersistenceUnitLocal" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <!--<class>ru.ttk.baloo.rest.model.User</class>-->
         <!--&lt;!&ndash;<class>ru.ttk.baloo.rest.repository.UserRepository</class>&ndash;&gt;-->

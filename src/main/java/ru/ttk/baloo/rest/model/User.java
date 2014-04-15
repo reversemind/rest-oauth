@@ -30,8 +30,6 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "r_user")
-@PersistenceContext(name="JpaPersistenceUnitDefault")
-//@Qualifier(value = "entityManagerFactoryDefault")
 public class User {
 
     @Id

@@ -10,8 +10,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "x_account")
-@PersistenceContext(unitName="JpaPersistenceUnitRemote")
-//@Qualifier(value = "entityManagerFactoryRemote")
 public class Account {
 
     @Id

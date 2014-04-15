@@ -68,6 +68,10 @@ public class Logout implements LogoutSuccessHandler {
         Account account = accountRepository.findOne("c01138f9-7446-4e48-bb5c-6c1e9f1ee2d6");
         LOG.info("Account:" + account);
 
+        account = accountRepository.findByPrincipalName("GaponovV@GLOBAL.TRANSTK.RU");
+        LOG.info("Account:" + account);
+
+
         List<User> users = userRepository.findAll();
         LOG.info("users:" + users);
 

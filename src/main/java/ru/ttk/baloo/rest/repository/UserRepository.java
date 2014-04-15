@@ -10,7 +10,5 @@ import javax.persistence.PersistenceContext;
 /**
  *
  */
-@PersistenceContext(unitName="JpaPersistenceUnitDefault")
-//@Qualifier(value = "entityManagerFactoryDefault")
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 }
