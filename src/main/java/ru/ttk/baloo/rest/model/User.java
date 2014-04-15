@@ -1,13 +1,37 @@
 package ru.ttk.baloo.rest.model;
 
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import javax.persistence.*;
 
 /**
  *
+ *
+ *
+ -- Table: r_user
+
+ -- DROP TABLE r_user;
+
+ CREATE TABLE r_user
+ (
+ id bigint NOT NULL,
+ user_name character(255) NOT NULL,
+ password character varying,
+ CONSTRAINT pk_x_user_id PRIMARY KEY (id )
+ )
+ WITH (
+ OIDS=FALSE
+ );
+ ALTER TABLE r_user
+ OWNER TO postgres;
+
+ *
  */
 @Entity
-@Table(name = "x_user")
+@Table(name = "r_user")
+@PersistenceContext(name="JpaPersistenceUnitDefault")
+//@Qualifier(value = "entityManagerFactoryDefault")
 public class User {
 
     @Id

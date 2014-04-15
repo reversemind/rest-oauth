@@ -18,18 +18,16 @@ package ru.ttk.baloo.rest.security.oauth;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.http.OAuth2ErrorHandler;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 import org.springframework.security.oauth2.provider.token.InMemoryTokenStore;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import ru.ttk.baloo.remote.model.Account;
 import ru.ttk.baloo.rest.model.User;
+import ru.ttk.baloo.remote.model.AccountRepository;
 import ru.ttk.baloo.rest.repository.UserRepository;
 
 import javax.inject.Inject;
-import javax.security.auth.login.AccountExpiredException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,9 +43,11 @@ public class Logout implements LogoutSuccessHandler {
 
     private final static Logger LOG = LoggerFactory.getLogger(Logout.class);
 
-
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    AccountRepository accountRepository;
 
     private InMemoryTokenStore tokenStore;
 
@@ -63,6 +63,11 @@ public class Logout implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
                                 Authentication authentication) throws IOException, ServletException {
+
+        // "c01138f9-7446-4e48-bb5c-6c1e9f1ee2d6";;"c0385cb4a2c18667337ecaf4323750b1";"entity://ORGSTRUCT.DB/ru.transtk.dc.orgStruct.portableEntities.PPerson/70bff4ac-40fb-431e-ac5d-bf25450dfeec";"GaponovV@GLOBAL.TRANSTK.RU"
+        Account account = accountRepository.findOne("c01138f9-7446-4e48-bb5c-6c1e9f1ee2d6");
+        LOG.info("Account:" + account);
+
         List<User> users = userRepository.findAll();
         LOG.info("users:" + users);
 
