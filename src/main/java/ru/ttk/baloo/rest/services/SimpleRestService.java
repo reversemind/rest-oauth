@@ -17,34 +17,22 @@ package ru.ttk.baloo.rest.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-
-@Component
-@Path("/service")
+@Controller
+@RequestMapping("/resources")
 public class SimpleRestService {
 
     private final static Logger LOG = LoggerFactory.getLogger(SimpleRestService.class);
 
-    @GET
-    @Path("/create")
-    public String createInfo() {
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    String createInfo() {
+        LOG.info("touched for /resources/service/create");
         return "/service/create";
     }
-
-    @GET
-    @Path("/get")
-    public String getMyInfo() {
-        return "/service/get";
-    }
-
-    @GET
-    @Path("/update")
-    public String updateMyInfo() {
-        return "/service/update";
-    }
-
 }

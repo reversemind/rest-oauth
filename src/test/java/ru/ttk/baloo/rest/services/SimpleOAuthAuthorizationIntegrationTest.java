@@ -1,13 +1,8 @@
 package ru.ttk.baloo.rest.services;
 
-import static junit.framework.Assert.*;
-import static ru.ttk.baloo.rest.security.oauth.OAuthUtils.OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE;
-
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,18 +14,20 @@ import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import ru.ttk.baloo.rest.dto.HouseDTO;
-import ru.ttk.baloo.rest.security.oauth.Logout;
 import ru.ttk.baloo.rest.security.oauth.OAuthUtils;
 import ru.ttk.baloo.rest.security.oauth.SampleUser;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static ru.ttk.baloo.rest.security.oauth.OAuthUtils.OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE;
 
 /**
  *
@@ -44,9 +41,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     final int PORT_NUMBER = 18181;
     final String WEB_CONTEXT_PATH = "rest-oauth";
 
-//    -- "ce805a7c-08ca-44e6-afd6-ec56e31d09d0";f;"3941b924d12454219648d61a7b025e1";"entity://ORGSTRUCT.DB/ru.ttk.baloo.orgstruct.portable.entities.PPerson/ca9868a9-03e8-4836-bf00-bb8ed07195d8";"svyaznoy.01@GLOBAL.TRANSTK.RU"
-//    static final String USER_NAME = "svyaznoy.01@GLOBAL.TRANSTK.RU";
-//    static final String PASSWORD  = "1qazXSW@";
+
     static final String USER_NAME = SampleUser.USERNAME;
     static final String PASSWORD  = SampleUser.PASSWORD;
 
@@ -90,7 +85,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add("Authorization", OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE + accessToken);
+//        headers.add("Authorization", OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE + accessToken);
 
         HouseDTO houseDTO = new HouseDTO();
         houseDTO.setUuid("UUID");
@@ -107,7 +102,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     @Test
     public void testAccessToMethods() throws IOException, InterruptedException {
 
-        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/service/create";
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/create";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());

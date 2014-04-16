@@ -11,11 +11,9 @@ import ru.ttk.baloo.rest.dto.HouseDTO;
  */
 @Controller
 @RequestMapping("/resources/create")
-//@RequestMapping(value = "/house2", method = RequestMethod.GET, consumes="application/json")
-//@RequestMapping(value = "/create", method = RequestMethod.POST, consumes="application/json")
-public class SController {
+public class JSONDTOSimpleController {
 
-    private final static Logger LOG = LoggerFactory.getLogger(SController.class);
+    private final static Logger LOG = LoggerFactory.getLogger(JSONDTOSimpleController.class);
 
     @RequestMapping(value = "/house", method = RequestMethod.POST, consumes="application/json")
     public
@@ -26,7 +24,8 @@ public class SController {
 //        return new RestResponse(new Header(Header.CODE.OK, Header.MESSAGE.OK), new Payload());
     }
 
-    @RequestMapping(value = "/house2", method = RequestMethod.GET, consumes="application/json")
+//    @RequestMapping(value = "/house2", method = RequestMethod.GET, consumes="application/json")
+    @RequestMapping(value = "/house2", method = RequestMethod.GET)
     public
     @ResponseBody
     String createHouse() {

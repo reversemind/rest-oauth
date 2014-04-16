@@ -29,14 +29,12 @@
     <context:property-placeholder location="classpath:rest-oauth.properties"/>
 
 
-    <import resource="security-context.xml" />
-    <import resource="data-jpa-context.xml" />
-    <import resource="beans-context.xml" />
+    <!--Utils & Services-->
+    <bean id="sController" class="ru.ttk.baloo.rest.services.JSONDTOSimpleController" />
+    <bean id="simpleRestService" class="ru.ttk.baloo.rest.services.SimpleRestService" />
 
 
-    <mvc:annotation-driven/>
-
-    <!-- Declares explicit support for annotation-driven MVC controllers  @RequestMapping, @Controller -->
-    <mvc:default-servlet-handler/>
+    <!--<context:component-scan base-package="ru.ttk.baloo.rest.services"/>-->
+    <bean id="remoteUserFinder" class="ru.ttk.baloo.rest.services.RemoteUserFinderStub" />
 
 </beans>

@@ -45,7 +45,8 @@
           entry-point-ref="oauthAuthenticationEntryPoint"
           xmlns="http://www.springframework.org/schema/security">
         <anonymous enabled="false"/>
-        <intercept-url pattern="/resources/**" method="GET"/>
+        <intercept-url pattern="/resources/**" method="GET" />
+        <!--<intercept-url pattern="/resources/*" />-->
         <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER"/>
         <access-denied-handler ref="oauthAccessDeniedHandler"/>
     </http>
@@ -83,8 +84,8 @@
     <!--FORCE TO USE CUSTOM PASSWORD ENCODER-->
     <authentication-manager alias="authenticationManager"
                             xmlns="http://www.springframework.org/schema/security">
-        <!--<authentication-provider user-service-ref="clientDetailsUserService"/>-->
-        <authentication-provider ref="authProvider"/>
+        <authentication-provider user-service-ref="clientDetailsUserService"/>
+        <!--<authentication-provider ref="authProvider"/>-->
     </authentication-manager>
 
     <bean id="authProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
