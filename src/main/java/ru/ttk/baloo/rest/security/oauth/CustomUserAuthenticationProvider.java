@@ -25,6 +25,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.ttk.baloo.rest.services.IRemoteUser;
 import ru.ttk.baloo.rest.services.IRemoteUserFinder;
+import ru.ttk.baloo.rest.services.RemoteUserFinderStub;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

@@ -4,6 +4,7 @@ import static junit.framework.Assert.*;
 import static ru.ttk.baloo.rest.security.oauth.OAuthUtils.OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE;
 
 import org.apache.commons.codec.binary.Base64;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -43,6 +44,12 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     final int PORT_NUMBER = 18181;
     final String WEB_CONTEXT_PATH = "rest-oauth";
 
+//    -- "ce805a7c-08ca-44e6-afd6-ec56e31d09d0";f;"3941b924d12454219648d61a7b025e1";"entity://ORGSTRUCT.DB/ru.ttk.baloo.orgstruct.portable.entities.PPerson/ca9868a9-03e8-4836-bf00-bb8ed07195d8";"svyaznoy.01@GLOBAL.TRANSTK.RU"
+//    static final String USER_NAME = "svyaznoy.01@GLOBAL.TRANSTK.RU";
+//    static final String PASSWORD  = "1qazXSW@";
+    static final String USER_NAME = SampleUser.USERNAME;
+    static final String PASSWORD  = SampleUser.PASSWORD;
+
     @Before
     public void init() throws Exception {
         // rest-oauth-0.0.1-SNAPSHOT.war
@@ -66,12 +73,12 @@ public class SimpleOAuthAuthorizationIntegrationTest {
 
     @Test
     public void testPostJSON2REST() throws IOException, InterruptedException {
+
         String accessToken = "123";
-        accessToken = this.authorizeAndGetAccessToken();
+        accessToken = this.authorizeAndGetAccessToken(USER_NAME, PASSWORD);
         assertNotNull(accessToken);
 
         Thread.sleep(500);
-
 
         final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/create/house";
 
@@ -98,10 +105,31 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     }
 
     @Test
+    public void testAccessToMethods() throws IOException, InterruptedException {
+
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/service/create";
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+        String result = response.getBody();
+
+        LOG.info("Result:" + result);
+    }
+
+    @Test
     public void testAccessToAuthorizedMethods() throws IOException, InterruptedException {
 
         String accessToken = "123";
-        accessToken = this.authorizeAndGetAccessToken();
+        accessToken = this.authorizeAndGetAccessToken(USER_NAME, PASSWORD);
         assertNotNull(accessToken);
 
         Thread.sleep(500);
@@ -158,7 +186,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
 
-        final String accessToken = this.authorizeAndGetAccessToken();
+        final String accessToken = this.authorizeAndGetAccessToken(USER_NAME, PASSWORD);
         assertNotNull(accessToken);
 
         Thread.sleep(500);
@@ -282,12 +310,14 @@ public class SimpleOAuthAuthorizationIntegrationTest {
      {"error":"invalid_grant","error_description":"Wrong user credentials"}
 
 
-
      *
      * @throws IOException
      */
     @Test
     public void testAuthorizationGetAccessTokenViaBasic() throws IOException {
+
+        final String userName = USER_NAME;
+        final String password = PASSWORD;
 
         final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/oauth/token";
 
@@ -297,8 +327,8 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
 
         // right now username = client_id & password = client_secret
-        String base64 = new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone());
-        LOG.info("base64 for string: " + SampleUser.USERNAME + ":" + SampleUser.PASSWORD + " =" + base64);
+        String base64 = new String(Base64.encodeBase64((userName + ":" + password).getBytes()).clone());
+        LOG.info("base64 for string: " + userName + ":" + password + " =" + base64);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -308,8 +338,8 @@ public class SimpleOAuthAuthorizationIntegrationTest {
 
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
         valueMap.add("grant_type", "password");
-        valueMap.add("username", SampleUser.USERNAME);
-        valueMap.add("password", SampleUser.PASSWORD);
+        valueMap.add("username", userName);
+        valueMap.add("password", password);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(valueMap, headers);
 
@@ -332,6 +362,9 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     @Test
     public void testAuthorizationGetAccessTokenViaUrlEncoded() throws IOException {
 
+        final String userName = USER_NAME;
+        final String password = PASSWORD;
+
         final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/oauth/token";
 
         RestTemplate restTemplate = new RestTemplate();
@@ -340,7 +373,6 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
 
         // right now username = client_id & password = client_secret
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -348,13 +380,12 @@ public class SimpleOAuthAuthorizationIntegrationTest {
 
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
         valueMap.add("grant_type", "password");
-        valueMap.add("username", SampleUser.USERNAME);
-        valueMap.add("password", SampleUser.PASSWORD);
-        valueMap.add("client_id", SampleUser.USERNAME);
-        valueMap.add("client_secret", SampleUser.PASSWORD);
+        valueMap.add("username", userName);
+        valueMap.add("password", password);
+        valueMap.add("client_id", userName);
+        valueMap.add("client_secret", password);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(valueMap, headers);
-
 
         String response = restTemplate.postForObject(url, request, String.class);
         LOG.info("Response from server:" + response);
@@ -371,10 +402,13 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     }
 
     /**
-     * @return
-     * @throws IOException
+     *
      */
-    private String authorizeAndGetAccessToken() throws IOException {
+    @Test
+    public void testRemoteBaseAuth() throws IOException {
+
+        final String userName = USER_NAME;
+        final String password = PASSWORD;
 
         final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/oauth/token";
 
@@ -384,8 +418,50 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
 
         // right now username = client_id & password = client_secret
-        String base64 = new String(Base64.encodeBase64((SampleUser.USERNAME + ":" + SampleUser.PASSWORD).getBytes()).clone());
-        LOG.info("base64 for string: " + SampleUser.USERNAME + ":" + SampleUser.PASSWORD + " :" + base64);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
+        valueMap.add("grant_type", "password");
+        valueMap.add("username", userName);
+        valueMap.add("password", password);
+        valueMap.add("client_id", userName);
+        valueMap.add("client_secret", password);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(valueMap, headers);
+
+        String response = restTemplate.postForObject(url, request, String.class);
+        LOG.info("Response from server:" + response);
+
+        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
+        LOG.info("responseMap:" + responseMap);
+
+        final String key_access_token = "access_token";
+        String access_token = responseMap.get(key_access_token);
+        assertNotNull(access_token);
+
+        LOG.info("access_token:" + access_token);
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    private String authorizeAndGetAccessToken(String userName, String password) throws IOException {
+
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/oauth/token";
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+
+        // right now username = client_id & password = client_secret
+        String base64 = new String(Base64.encodeBase64((userName + ":" + password).getBytes()).clone());
+        LOG.info("base64 for string: " + userName + ":" + password + " :" + base64);
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -395,17 +471,15 @@ public class SimpleOAuthAuthorizationIntegrationTest {
 
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<String, String>();
         valueMap.add("grant_type", "password");
-        valueMap.add("username", SampleUser.USERNAME);
-        valueMap.add("password", SampleUser.PASSWORD);
+        valueMap.add("username", userName);
+        valueMap.add("password", password);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(valueMap, headers);
-
 
         String response = restTemplate.postForObject(url, request, String.class);
         LOG.info("Response from server:" + response);
 
-        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {
-        });
+        Map<String, String> responseMap = new ObjectMapper().readValue(response, new TypeReference<Map<String, String>>() {});
         LOG.info("responseMap:" + responseMap);
 
         final String key_access_token = "access_token";
@@ -415,4 +489,5 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         LOG.info("Access token:" + access_token);
         return access_token;
     }
+
 }

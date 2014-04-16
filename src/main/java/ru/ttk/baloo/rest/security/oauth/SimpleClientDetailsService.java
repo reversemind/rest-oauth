@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 import ru.ttk.baloo.rest.services.IRemoteUser;
 import ru.ttk.baloo.rest.services.IRemoteUserFinder;
+import ru.ttk.baloo.rest.services.RemoteUserFinderStub;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -44,18 +45,18 @@ public class SimpleClientDetailsService implements ClientDetailsService {
 
         if (StringUtils.isNotBlank(clientId)) {
 
-            IRemoteUser remoteUser = remoteUserFinder.findUser(clientId);
-            if (remoteUser != null) {
-                //                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token", "client_credentials");
-                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token");
-                BaseClientDetails clientDetails = new BaseClientDetails();
-                // in our case username <=> clientId and clientSecret <=> password
-                clientDetails.setClientId(remoteUser.getUserName());
-                clientDetails.setClientSecret(remoteUser.getPassword());
-                clientDetails.setAuthorizedGrantTypes(authorizedGrantTypes);
-
-                return clientDetails;
-            }
+            return remoteUserFinder.findClient(clientId);
+//            IRemoteUser remoteUser = remoteUserFinder.findUser(clientId);
+//            if (remoteUser != null) {
+//                //                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token", "client_credentials");
+//                List<String> authorizedGrantTypes = Arrays.asList("password", "refresh_token");
+//                BaseClientDetails clientDetails = new BaseClientDetails();
+//                // in our case username <=> clientId and clientSecret <=> password
+//                clientDetails.setClientId(remoteUser.getUserName());
+//                clientDetails.setClientSecret(remoteUser.getPassword());
+//                clientDetails.setAuthorizedGrantTypes(authorizedGrantTypes);
+//                return clientDetails;
+//            }
         }
 
         LOG.warn("No client with requested id: " + clientId);

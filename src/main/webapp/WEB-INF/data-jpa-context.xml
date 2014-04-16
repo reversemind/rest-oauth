@@ -36,9 +36,9 @@
                       transaction-manager-ref="transactionManagerLocal" />
 
     <!-- !!! Better to separate packages for scanning into other subtree !!! -->
-    <jpa:repositories base-package="ru.ttk.baloo.remote"
-                      entity-manager-factory-ref="entityManagerFactoryRemote"
-                      transaction-manager-ref="transactionManagerRemote"/>
+    <jpa:repositories base-package="ru.ttk.baloo.remote.core"
+                      entity-manager-factory-ref="entityManagerFactoryRemoteCore"
+                      transaction-manager-ref="transactionManagerRemoteCore"/>
 
     <bean id="dataSourceLocal" class="com.jolbox.bonecp.BoneCPDataSource" >
         <property name="driverClass" value="org.postgresql.Driver" />
@@ -47,7 +47,7 @@
         <property name="password" value="${datasource.rest.api.jdbc.password}" />
     </bean>
 
-    <bean id="dataSourceRemote" class="com.jolbox.bonecp.BoneCPDataSource" >
+    <bean id="dataSourceRemoteCore" class="com.jolbox.bonecp.BoneCPDataSource" >
         <property name="driverClass" value="org.postgresql.Driver" />
         <property name="jdbcUrl" value="${datasource.core.jdbc.url}" />
         <property name="username" value="${datasource.core.jdbc.username}" />
@@ -58,8 +58,8 @@
         <property name="entityManagerFactory" ref="entityManagerFactoryLocal"/>
     </bean>
 
-    <bean id="transactionManagerRemote" class="org.springframework.orm.jpa.JpaTransactionManager" >
-        <property name="entityManagerFactory" ref="entityManagerFactoryRemote"/>
+    <bean id="transactionManagerRemoteCore" class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="entityManagerFactoryRemoteCore"/>
     </bean>
 
     <bean id="entityManagerFactoryLocal" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -79,11 +79,11 @@
         </property>
     </bean>
 
-    <bean id="entityManagerFactoryRemote" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSourceRemote" />
-        <property name="persistenceUnitName" value="JpaPersistenceUnitRemote" />
+    <bean id="entityManagerFactoryRemoteCore" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSourceRemoteCore" />
+        <property name="persistenceUnitName" value="JpaPersistenceUnitRemoteCore" />
         <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence-remote-core.xml"/>
-        <property name="packagesToScan" value="ru.ttk.baloo.remote.model" />
+        <property name="packagesToScan" value="ru.ttk.baloo.remote.core" />
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="true" />

@@ -1,10 +1,10 @@
-package ru.ttk.baloo.remote.model;
+package ru.ttk.baloo.remote.core.model;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 /**
- *
+ *  Core Account
  */
 @Entity
 @Table(name = "x_account")

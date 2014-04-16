@@ -79,10 +79,21 @@
         <property name="authenticationManager" ref="authenticationManager"/>
     </bean>
 
+
+    <!--FORCE TO USE CUSTOM PASSWORD ENCODER-->
     <authentication-manager alias="authenticationManager"
                             xmlns="http://www.springframework.org/schema/security">
-        <authentication-provider user-service-ref="clientDetailsUserService"/>
+        <!--<authentication-provider user-service-ref="clientDetailsUserService"/>-->
+        <authentication-provider ref="authProvider"/>
     </authentication-manager>
+
+    <bean id="authProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="clientDetailsUserService" />
+        <property name="passwordEncoder" ref="bullShitPasswordEncoder" />
+    </bean>
+
+    <!--FORCE TO USE CUSTOM PASSWORD ENCODER-->
+    <bean id="bullShitPasswordEncoder" class="org.springframework.security.authentication.encoding.BullShitPasswordEncoder" />
 
     <bean id="clientDetailsUserService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
         <constructor-arg ref="clientDetails"/>
@@ -117,6 +128,5 @@
         <property name="accessTokenValiditySeconds" value="${rest.api.access.token.validity.seconds}"/>
         <property name="clientDetailsService" ref="clientDetails"/>
     </bean>
-
 
 </beans>

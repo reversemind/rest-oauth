@@ -22,9 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.InMemoryTokenStore;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import ru.ttk.baloo.remote.model.Account;
+import ru.ttk.baloo.remote.core.model.Account;
+import ru.ttk.baloo.remote.core.repository.AccountRepository;
 import ru.ttk.baloo.rest.model.User;
-import ru.ttk.baloo.remote.model.AccountRepository;
 import ru.ttk.baloo.rest.repository.UserRepository;
 
 import javax.inject.Inject;

@@ -15,12 +15,19 @@
  */
 package ru.ttk.baloo.rest.security.oauth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ *
+ */
 public class CustomUserPasswordAuthenticationToken extends AbstractAuthenticationToken {
+
+    private final static Logger LOG = LoggerFactory.getLogger(CustomUserPasswordAuthenticationToken.class);
 
     private final Object principal;
     private Object credentials;
@@ -28,10 +35,6 @@ public class CustomUserPasswordAuthenticationToken extends AbstractAuthenticatio
 
     public int getLoginId() {
         return loginId;
-    }
-
-    public void setLoginId(int loginId) {
-        this.loginId = loginId;
     }
 
     public CustomUserPasswordAuthenticationToken(Object principal,
@@ -45,6 +48,16 @@ public class CustomUserPasswordAuthenticationToken extends AbstractAuthenticatio
     public CustomUserPasswordAuthenticationToken(Object principal,
                                                  Object credentials,
                                                  Collection<? extends GrantedAuthority> authorities) {
+        super(authorities);
+        this.principal = principal;
+        this.credentials = credentials;
+        super.setAuthenticated(true);
+    }
+
+    public CustomUserPasswordAuthenticationToken(Object principal,
+                                                 Object credentials,
+                                                 Collection<? extends GrantedAuthority> authorities,
+                                                 String personUri) {
         super(authorities);
         this.principal = principal;
         this.credentials = credentials;
