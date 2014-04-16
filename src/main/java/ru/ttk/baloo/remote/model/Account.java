@@ -1,7 +1,5 @@
 package ru.ttk.baloo.remote.model;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -23,7 +21,7 @@ public class Account {
     String password;
 
     @Column(name = "person", nullable = true, length = 255)
-    String person;
+    String personUri;
 
     @Column(name = "principal_name", nullable = true, length = 255)
     String principalName;
@@ -32,15 +30,15 @@ public class Account {
         this.uuid = UUID.randomUUID().toString();
         this.locked = false;
         this.password = null;
-        this.person = null;
+        this.personUri = null;
         this.principalName = null;
     }
 
-    public Account(String uuid, boolean locked, String password, String person, String principalName) {
+    public Account(String uuid, boolean locked, String password, String personUri, String principalName) {
         this.uuid = uuid;
         this.locked = locked;
         this.password = password;
-        this.person = person;
+        this.personUri = personUri;
         this.principalName = principalName;
     }
 
@@ -68,12 +66,12 @@ public class Account {
         this.password = password;
     }
 
-    public String getPerson() {
-        return person;
+    public String getPersonUri() {
+        return personUri;
     }
 
-    public void setPerson(String person) {
-        this.person = person;
+    public void setPersonUri(String person) {
+        this.personUri = person;
     }
 
     public String getPrincipalName() {
@@ -90,7 +88,7 @@ public class Account {
                 "uuid='" + uuid + '\'' +
                 ", locked=" + locked +
                 ", password='" + password + '\'' +
-                ", person='" + person + '\'' +
+                ", person='" + personUri + '\'' +
                 ", principalName='" + principalName + '\'' +
                 '}';
     }

@@ -26,6 +26,7 @@
         http://www.springframework.org/schema/data/repository/spring-repository.xsd">
 
     <context:annotation-config />
+    <context:property-placeholder location="classpath:rest-oauth.properties"/>
 
     <!--ACCORDING TO SPECIFICATION Token End-point-->
     <http pattern="/oauth/token"
@@ -160,18 +161,18 @@
                       entity-manager-factory-ref="entityManagerFactoryRemote"
                       transaction-manager-ref="transactionManagerRemote"/>
 
-    <bean id="localDataSource" class="com.jolbox.bonecp.BoneCPDataSource" >
+    <bean id="dataSourceLocal" class="com.jolbox.bonecp.BoneCPDataSource" >
         <property name="driverClass" value="org.postgresql.Driver" />
-        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/test_rest" />
-        <property name="username" value="test" />
-        <property name="password" value="test" />
+        <property name="jdbcUrl" value="${datasource.rest.api.jdbc.url}" />
+        <property name="username" value="${datasource.rest.api.jdbc.username}" />
+        <property name="password" value="${datasource.rest.api.jdbc.password}" />
     </bean>
 
-    <bean id="remoteDataSource" class="com.jolbox.bonecp.BoneCPDataSource" >
+    <bean id="dataSourceRemote" class="com.jolbox.bonecp.BoneCPDataSource" >
         <property name="driverClass" value="org.postgresql.Driver" />
-        <property name="jdbcUrl" value="jdbc:postgresql://10.110.56.20:5432/baloo_core" />
-        <property name="username" value="test" />
-        <property name="password" value="test" />
+        <property name="jdbcUrl" value="${datasource.core.jdbc.url}" />
+        <property name="username" value="${datasource.core.jdbc.username}" />
+        <property name="password" value="${datasource.core.jdbc.password}" />
     </bean>
 
     <bean id="transactionManagerLocal" class="org.springframework.orm.jpa.JpaTransactionManager" >
@@ -183,7 +184,7 @@
     </bean>
 
     <bean id="entityManagerFactoryLocal" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="localDataSource" />
+        <property name="dataSource" ref="dataSourceLocal" />
         <property name="persistenceUnitName" value="JpaPersistenceUnitLocal" />
         <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml"/>
         <property name="packagesToScan" value="ru.ttk.baloo.rest" />
@@ -191,6 +192,7 @@
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="true" />
                 <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+                <property name="database" value="POSTGRESQL" />
             </bean>
         </property>
         <property name="loadTimeWeaver">
@@ -199,14 +201,15 @@
     </bean>
 
     <bean id="entityManagerFactoryRemote" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="remoteDataSource" />
+        <property name="dataSource" ref="dataSourceRemote" />
         <property name="persistenceUnitName" value="JpaPersistenceUnitRemote" />
-        <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence-remote.xml"/>
+        <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence-remote-core.xml"/>
         <property name="packagesToScan" value="ru.ttk.baloo.remote.model" />
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="true" />
                 <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+                <property name="database" value="POSTGRESQL" />
             </bean>
         </property>
         <property name="loadTimeWeaver">
