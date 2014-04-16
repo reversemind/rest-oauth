@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:repository="http://www.springframework.org/schema/data/repository"
+       xsi:schemaLocation="http://www.springframework.org/schema/security/oauth2
+        http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/data/jpa
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/data/repository
+        http://www.springframework.org/schema/data/repository/spring-repository.xsd">
+
+    <context:annotation-config />
+    <context:property-placeholder location="classpath:rest-oauth.properties"/>
+
+    <!--SPRING DATA JPA-->
+    <!--https://github.com/spring-projects/spring-data-jpa/blob/master/src/test/resources/multiple-entity-manager-integration-context.xml-->
+
+    <jpa:repositories base-package="ru.ttk.baloo.rest"
+                      entity-manager-factory-ref="entityManagerFactoryLocal"
+                      transaction-manager-ref="transactionManagerLocal" />
+
+    <!-- !!! Better to separate packages for scanning into other subtree !!! -->
+    <jpa:repositories base-package="ru.ttk.baloo.remote"
+                      entity-manager-factory-ref="entityManagerFactoryRemote"
+                      transaction-manager-ref="transactionManagerRemote"/>
+
+    <bean id="dataSourceLocal" class="com.jolbox.bonecp.BoneCPDataSource" >
+        <property name="driverClass" value="org.postgresql.Driver" />
+        <property name="jdbcUrl" value="${datasource.rest.api.jdbc.url}" />
+        <property name="username" value="${datasource.rest.api.jdbc.username}" />
+        <property name="password" value="${datasource.rest.api.jdbc.password}" />
+    </bean>
+
+    <bean id="dataSourceRemote" class="com.jolbox.bonecp.BoneCPDataSource" >
+        <property name="driverClass" value="org.postgresql.Driver" />
+        <property name="jdbcUrl" value="${datasource.core.jdbc.url}" />
+        <property name="username" value="${datasource.core.jdbc.username}" />
+        <property name="password" value="${datasource.core.jdbc.password}" />
+    </bean>
+
+    <bean id="transactionManagerLocal" class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="entityManagerFactoryLocal"/>
+    </bean>
+
+    <bean id="transactionManagerRemote" class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="entityManagerFactoryRemote"/>
+    </bean>
+
+    <bean id="entityManagerFactoryLocal" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSourceLocal" />
+        <property name="persistenceUnitName" value="JpaPersistenceUnitLocal" />
+        <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml"/>
+        <property name="packagesToScan" value="ru.ttk.baloo.rest" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true" />
+                <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+                <property name="database" value="POSTGRESQL" />
+            </bean>
+        </property>
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+        </property>
+    </bean>
+
+    <bean id="entityManagerFactoryRemote" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSourceRemote" />
+        <property name="persistenceUnitName" value="JpaPersistenceUnitRemote" />
+        <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence-remote-core.xml"/>
+        <property name="packagesToScan" value="ru.ttk.baloo.remote.model" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true" />
+                <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+                <property name="database" value="POSTGRESQL" />
+            </bean>
+        </property>
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+        </property>
+    </bean>
+
+</beans>
+
+
+
+        <!--<tx:annotation-driven transaction-manager="transactionManagerDefault" />-->
+        <!--<tx:annotation-driven />-->
+        <!--<tx:jta-transaction-manager />-->
+
+        <!--for J2EE use http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/orm.html#orm-jpa-->
+        <!--<jee:jndi-lookup id="myEmf" jndi-name="persistence/myPersistenceUnit"/>-->
+        <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" >-->
+        <!--<property name="dataSource" ref="dataSource" />-->
+        <!--<property name="persistenceProviderClass" value="org.hibernate.ejb.HibernatePersistence" />-->
+        <!--<property name="packagesToScan" value="ru.ttk.baloo.rest.model" />-->
+        <!--<property name="loadTimeWeaver">-->
+        <!--<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>-->
+        <!--</property>-->
+        <!--</bean>-->
