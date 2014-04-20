@@ -12,4 +12,6 @@ public interface IRemoteUser extends Serializable {
     public String getPassword();
 
     public String getPersonURI();
+
+    public String getRoles();
 }

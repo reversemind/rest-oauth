@@ -60,7 +60,8 @@ public class CustomUserAuthenticationProvider implements AuthenticationProvider 
             IRemoteUser remoteUser = remoteServiceFindUser.findUser(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
             if (remoteUser != null) {
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-                CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), grantedAuthorities);
+//                CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), grantedAuthorities);
+                CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(remoteUser, authentication.getCredentials(), grantedAuthorities);
                 return auth;
             }
         }
