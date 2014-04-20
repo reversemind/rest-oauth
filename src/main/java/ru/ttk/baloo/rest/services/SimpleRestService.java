@@ -15,6 +15,7 @@
  */
 package ru.ttk.baloo.rest.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -39,10 +40,15 @@ public class SimpleRestService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         LOG.info("currentUser:" + principal);
+        if(principal != null){
+            IRemoteUser remoteUser = (IRemoteUser)principal;
+            if(StringUtils.isNotBlank(remoteUser.getRoles())){
+                LOG.info("User roles are:" + remoteUser.getRoles());
+                remoteUser.getRoles().indexOf(SecurityConstants.ROLE_EXTERNAL_REST_CLIENT);
+            }
+        }
 
         return "touched for /resources/simple - VIA OAUTH2";
     }

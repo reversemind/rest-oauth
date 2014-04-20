@@ -25,7 +25,9 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 import ru.ttk.baloo.remote.core.model.Account;
+import ru.ttk.baloo.remote.core.model.Role;
 import ru.ttk.baloo.remote.core.repository.AccountRepository;
+import ru.ttk.baloo.remote.core.repository.RoleRepository;
 import ru.ttk.baloo.rest.security.oauth.SampleUser;
 
 import javax.inject.Inject;
@@ -50,6 +52,9 @@ public class RemoteUserFinderStub implements IRemoteUserFinder {
     @Inject
     AccountRepository accountRepository;
 
+    @Inject
+    RoleRepository roleRepository;
+
     // TODO cache
     public IRemoteUser findUser(String userName, String password) {
 
@@ -66,7 +71,14 @@ public class RemoteUserFinderStub implements IRemoteUserFinder {
             LOG.info("Get from core account:" + account);
 
             if (account != null) {
-                return new RemoteUser(account.getPrincipalName(), password, "", account.getPersonUri());
+                List<String> roleList = roleRepository.findRoleNamesByAccountId(account.getUuid());
+                if (roleList != null && roleList.size() > 0) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (String role : roleList) {
+                        stringBuilder.append(role).append(";");
+                    }
+                    return new RemoteUser(account.getPrincipalName(), password, stringBuilder.toString(), account.getPersonUri());
+                }
             }
         }
         return null;

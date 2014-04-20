@@ -22,10 +22,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.ttk.baloo.rest.services.IRemoteUser;
 import ru.ttk.baloo.rest.services.IRemoteUserFinder;
 import ru.ttk.baloo.rest.services.RemoteUserFinderStub;
+import ru.ttk.baloo.rest.services.SecurityConstants;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class CustomUserAuthenticationProvider implements AuthenticationProvider 
             IRemoteUser remoteUser = remoteServiceFindUser.findUser(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
             if (remoteUser != null) {
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+                grantedAuthorities.add(new SimpleGrantedAuthority(remoteUser.getRoles()));
 //                CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), grantedAuthorities);
                 CustomUserPasswordAuthenticationToken auth = new CustomUserPasswordAuthenticationToken(remoteUser, authentication.getCredentials(), grantedAuthorities);
                 return auth;

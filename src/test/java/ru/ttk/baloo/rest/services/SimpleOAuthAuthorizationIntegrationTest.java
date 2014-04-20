@@ -41,9 +41,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     final int PORT_NUMBER = 18181;
     final String WEB_CONTEXT_PATH = "rest-oauth";
 
-//    -- "ce805a7c-08ca-44e6-afd6-ec56e31d09d0";f;"3941b924d12454219648d61a7b025e1";"entity://ORGSTRUCT.DB/ru.ttk.baloo.orgstruct.portable.entities.PPerson/ca9868a9-03e8-4836-bf00-bb8ed07195d8";"svyaznoy.01@GLOBAL.TRANSTK.RU"
-    static final String USER_NAME = "svyaznoy.01@GLOBAL.TRANSTK.RU";
-    static final String PASSWORD  = "1qazXSW@";
+
 //    static final String USER_NAME = SampleUser.USERNAME;
 //    static final String PASSWORD  = SampleUser.PASSWORD;
 
