@@ -3,40 +3,74 @@ rest-oauth
 
 rest-oauth
 
-Мы используем для аутентификации и авторизации протокол OAuth 2.0
-
-Одну из четырех схем авторизации - Resource Owner Password Credentials
-http://tools.ietf.org/html/rfc6749#section-1.3.3
-http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.3
 
 
-4.3.2.  Access Token Request
+Общие положения
 
-   The client makes a request to the token endpoint by adding the
-   following parameters using the "application/x-www-form-urlencoded"
-   format per Appendix B with a character encoding of UTF-8 in the HTTP
-   request entity-body:
+${PREFIX_SERVER_URL} - префикс URL для функций и точек входа (выдается приватно)
+
+${LOGIN} - логин (выдается приватно)
+
+${PASSWORD} - пароль (выдается приватно)
+
+
+
+
+### Аутентификация
+
+Для аутентификации используется протокол OAuth 2.0
+
+Схема [Resource Owner Password Credentials] - http://tools.ietf.org/html/rfc6749#section-1.3.3 http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.3
+
+
+     +----------+
+     | Resource |
+     |  Owner   |
+     |          |
+     +----------+
+          v
+          |    Resource Owner
+         (A) Password Credentials
+          |
+          v
+     +---------+                                  +---------------+
+     |         |>--(B)---- Resource Owner ------->|               |
+     |         |         Password Credentials     | Authorization |
+     | Client  |                                  |     Server    |
+     |         |<--(C)---- Access Token ---------<|               |
+     |         |    (w/ Optional Refresh Token)   |               |
+     +---------+                                  +---------------+
+
+            Resource Owner Password Credentials
+
+
+
+#### Запрос для получения [Access Token]
+
+Клиент делает запрос на входную точку:
+```bash
+https://${PREFIX_SERVER_URL}/oauth/token
+```
+
+Добавляет следующие параметры (все обязательны), используя "application/x-www-form-urlencoded", кодировка UTF-8 в HTTP request entity-body:
 
 ```bash
    grant_type
-         REQUIRED.  Value MUST be set to "password".
+           Значение всегда "password".
    username
-         REQUIRED.  The resource owner username.
+         ${LOGIN}
    password
-         REQUIRED.  The resource owner password.
+         ${PASSWORD}
+   client_id
+         ${LOGIN}                  
+   client_secret
+         ${PASSWORD}         
 ```
 
+В данной реализации значения username = client_id и password = client_secret
 
 
- 4.3.3.  Access Token Response
-
-    If the access token request is valid and authorized, the
-    authorization server issues an access token and optional refresh
-    token as described in Section 5.1.  If the request failed client
-    authentication or is invalid, the authorization server returns an
-    error response as described in Section 5.2.
-
-    An example successful response:
+#### Успешный ответ с [Access Token]
 
 ```bash
       HTTP/1.1 200 OK
@@ -46,11 +80,27 @@ http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.3
 ```
 
 ```json
-      {
-        "access_token":"2YotnFZFEjr1zCsicMWpAA",
-        "token_type":"example",
-        "expires_in":3600,
-        "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
-        "example_parameter":"example_value"
-      }
+   {
+       "access_token": "8b0f866b-30fa-4426-8122-af8f4097942c", 
+       "token_type": "bearer", 
+       "refresh_token": "a1cf4020-5336-45c1-be98-ca4018b76b29", 
+       "expires_in": 3599
+   }
 ```
+"expires_in" - значение в секундах, 3600 - выдается на один час в этой версии
+
+"token_type" - в этой версии всегда "bearer"
+
+Полученное значение "access_token": "8b0f866b-30fa-4426-8122-af8f4097942c" - необходимо использовать для доступа к функциям
+
+
+При отказе в Аутентификации вернется HTTP-401
+```json
+Если такого Клиента нет
+{"error":"unauthorized","error_description":"An Authentication object was not found in the SecurityContext"}
+
+Если не правильный пароль
+{"error":"invalid_client","error_description":"Bad client credentials"}
+```
+
+При отказе в Авторизации вернется HTTP-403
