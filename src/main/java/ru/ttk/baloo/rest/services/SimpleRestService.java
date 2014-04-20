@@ -28,11 +28,11 @@ public class SimpleRestService {
 
     private final static Logger LOG = LoggerFactory.getLogger(SimpleRestService.class);
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/simple", method = RequestMethod.GET)
     public
     @ResponseBody
     String createInfo() {
-        LOG.info("touched for /resources/service/create");
-        return "/service/create";
+        LOG.info("touched for /resources/simple - VIA OAUTH2");
+        return "touched for /resources/simple - VIA OAUTH2";
     }
 }

@@ -41,7 +41,9 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     final int PORT_NUMBER = 18181;
     final String WEB_CONTEXT_PATH = "rest-oauth";
 
-
+//    -- "ce805a7c-08ca-44e6-afd6-ec56e31d09d0";f;"3941b924d12454219648d61a7b025e1";"entity://ORGSTRUCT.DB/ru.ttk.baloo.orgstruct.portable.entities.PPerson/ca9868a9-03e8-4836-bf00-bb8ed07195d8";"svyaznoy.01@GLOBAL.TRANSTK.RU"
+//    static final String USER_NAME = "svyaznoy.01@GLOBAL.TRANSTK.RU";
+//    static final String PASSWORD  = "1qazXSW@";
     static final String USER_NAME = SampleUser.USERNAME;
     static final String PASSWORD  = SampleUser.PASSWORD;
 
@@ -75,7 +77,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
 
         Thread.sleep(500);
 
-        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/create/house";
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/create/house2";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -102,7 +104,7 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     @Test
     public void testAccessToMethods() throws IOException, InterruptedException {
 
-        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/create";
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/simple";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -112,6 +114,33 @@ public class SimpleOAuthAuthorizationIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+        String result = response.getBody();
+
+        LOG.info("Result:" + result);
+    }
+
+
+    @Test
+    public void testAccessToMethodsViaToken() throws IOException, InterruptedException {
+
+        String accessToken = "123";
+        accessToken = this.authorizeAndGetAccessToken(USER_NAME, PASSWORD);
+        assertNotNull(accessToken);
+
+        final String url = "http://localhost:" + PORT_NUMBER + "/" + WEB_CONTEXT_PATH + "/resources/simple";
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", OAUTH_HEADER_VALUE_BEARER_PLUS_SPACE + accessToken);
 
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);

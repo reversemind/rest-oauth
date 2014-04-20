@@ -36,10 +36,14 @@ public class JSONDTOSimpleController {
     }
 
 //    @RequestMapping(value = "/house2", method = RequestMethod.GET, consumes="application/json")
-    @RequestMapping(value = "/house2", method = RequestMethod.GET)
+    @RequestMapping(value = "/house2", method = RequestMethod.POST)
     public
     @ResponseBody
-    String createHouse() {
+    String createHouse(OAuth2Authentication auth) {
+        LOG.info("HHHH:" + SecurityContextHolder.getContext());
+        LOG.info("GGGG:" + auth);
+
+
         LOG.info("HouseDTO:");
         return "{\"code\" : \"OK\"}";
 //        return new RestResponse(new Header(Header.CODE.OK, Header.MESSAGE.OK), new Payload());

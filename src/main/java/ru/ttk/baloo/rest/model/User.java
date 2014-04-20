@@ -4,6 +4,7 @@ package ru.ttk.baloo.rest.model;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 /**
  *
@@ -29,12 +30,12 @@ import javax.persistence.*;
  *
  */
 @Entity
-@Table(name = "r_user")
+@Table(name = "rest_user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "id", nullable = false, length = 36)
+    private String id;
 
     @Column(name = "user_name", nullable = false, length = 255)
     private String userName;
@@ -43,20 +44,28 @@ public class User {
     private String password;
 
     public User() {
+        this.id = UUID.randomUUID().toString();
         this.userName = "USER_NAME";
         this.password = "PASSWORD";
     }
 
-    public User(String userName, String password) {
+    public User(String id, String userName, String password) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
     }
 
-    public Long getId() {
+    public User(String userName, String password) {
+        this.id = UUID.randomUUID().toString();
+        this.userName = userName;
+        this.password = password;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
