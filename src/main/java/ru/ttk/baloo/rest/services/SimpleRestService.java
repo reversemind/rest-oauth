@@ -18,6 +18,7 @@ package ru.ttk.baloo.rest.services;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -46,7 +47,11 @@ public class SimpleRestService {
             IRemoteUser remoteUser = (IRemoteUser)principal;
             if(StringUtils.isNotBlank(remoteUser.getRoles())){
                 LOG.info("User roles are:" + remoteUser.getRoles());
-                remoteUser.getRoles().indexOf(SecurityConstants.ROLE_EXTERNAL_REST_CLIENT);
+                if(remoteUser.getRoles().indexOf(SecurityConstants.ROLE_EXTERNAL_REST_CLIENT) >=0 ){
+                    LOG.info("USER IS AUTHENTICATED");
+                }else{
+                    throw new InsufficientAuthenticationException("InsufficientAuthenticationException ");
+                }
             }
         }
 

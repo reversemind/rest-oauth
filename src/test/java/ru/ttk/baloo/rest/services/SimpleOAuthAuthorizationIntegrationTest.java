@@ -41,7 +41,6 @@ public class SimpleOAuthAuthorizationIntegrationTest {
     final int PORT_NUMBER = 18181;
     final String WEB_CONTEXT_PATH = "rest-oauth";
 
-
 //    static final String USER_NAME = SampleUser.USERNAME;
 //    static final String PASSWORD  = SampleUser.PASSWORD;
 
