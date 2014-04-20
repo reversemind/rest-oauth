@@ -31,6 +31,11 @@ public class RemoteUser implements Serializable, IRemoteUser {
         return password;
     }
 
+    @Override
+    public String getPersonURI() {
+        return this.personUri;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }

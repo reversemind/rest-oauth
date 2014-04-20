@@ -29,6 +29,28 @@
     <context:property-placeholder location="classpath:rest-oauth.properties"/>
 
     <!--ACCORDING TO SPECIFICATION Token End-point-->
+    <!--<http pattern="/oauth/token"-->
+          <!--create-session="stateless"-->
+          <!--authentication-manager-ref="authenticationManager"-->
+          <!--xmlns="http://www.springframework.org/schema/security">-->
+        <!--<intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY"/>-->
+        <!--<anonymous enabled="false"/>-->
+        <!--<http-basic entry-point-ref="clientAuthenticationEntryPoint"/>-->
+        <!--<custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER"/>-->
+        <!--<access-denied-handler ref="oauthAccessDeniedHandler"/>-->
+    <!--</http>-->
+
+
+    <http pattern="/resources/**"
+          create-session="never"
+          entry-point-ref="oauthAuthenticationEntryPoint"
+          xmlns="http://www.springframework.org/schema/security">
+        <anonymous enabled="false"/>
+        <intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_FULLY" />
+        <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER"/>
+        <access-denied-handler ref="oauthAccessDeniedHandler"/>
+    </http>
+
     <http pattern="/oauth/token"
           create-session="stateless"
           authentication-manager-ref="authenticationManager"
@@ -40,15 +62,6 @@
         <access-denied-handler ref="oauthAccessDeniedHandler"/>
     </http>
 
-    <http pattern="/resources/**"
-          create-session="never"
-          entry-point-ref="oauthAuthenticationEntryPoint"
-          xmlns="http://www.springframework.org/schema/security">
-        <anonymous enabled="false"/>
-        <intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_FULLY" />
-        <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER"/>
-        <access-denied-handler ref="oauthAccessDeniedHandler"/>
-    </http>
 
     <http pattern="/logout"
           create-session="never"
@@ -99,7 +112,7 @@
         <constructor-arg ref="clientDetails"/>
     </bean>
 
-    <bean id="clientDetails" class="ru.ttk.baloo.rest.security.oauth.SimpleClientDetailsService"/>
+    <bean id="clientDetails" class="ru.ttk.baloo.rest.security.oauth.ClientDetailsServiceAdapter"/>
 
     <oauth:authorization-server
             client-details-service-ref="clientDetails"

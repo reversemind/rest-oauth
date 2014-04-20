@@ -19,23 +19,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
-import ru.ttk.baloo.rest.services.IRemoteUser;
 import ru.ttk.baloo.rest.services.IRemoteUserFinder;
-import ru.ttk.baloo.rest.services.RemoteUserFinderStub;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
-public class SimpleClientDetailsService implements ClientDetailsService {
+public class ClientDetailsServiceAdapter implements ClientDetailsService {
 
-    private final static Logger LOG = LoggerFactory.getLogger(SimpleClientDetailsService.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ClientDetailsServiceAdapter.class);
 
     @Inject
     IRemoteUserFinder remoteUserFinder;

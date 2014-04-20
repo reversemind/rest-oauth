@@ -35,6 +35,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Remote emulation
@@ -109,6 +110,9 @@ public class RemoteUserFinderStub implements IRemoteUserFinder {
             clientDetails.setClientId(remoteUser.getUserName());
             clientDetails.setClientSecret(remoteUser.getPassword());
             clientDetails.setAuthorizedGrantTypes(authorizedGrantTypes);
+
+            clientDetails.addAdditionalInformation("personUri", remoteUser.getPersonURI());
+
             return clientDetails;
         }
 

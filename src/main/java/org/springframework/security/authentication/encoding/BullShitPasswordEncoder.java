@@ -53,23 +53,23 @@ public class BullShitPasswordEncoder extends PlaintextPasswordEncoder {
      * @return
      */
     public static String wrongMD5(String s) {
-        return s;
-//        if (s == null) return null;
-//        byte[] bytesOfMessage;
-//        try {
-//            bytesOfMessage = s.getBytes("UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        MessageDigest md;
-//        try {
-//            md = MessageDigest.getInstance("MD5");
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-//        byte[] digest = md.digest(bytesOfMessage);
-//        BigInteger bigInt = new BigInteger(1, digest);
-//        return bigInt.toString(16);
+//        return s;
+        if (s == null) return null;
+        byte[] bytesOfMessage;
+        try {
+            bytesOfMessage = s.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] digest = md.digest(bytesOfMessage);
+        BigInteger bigInt = new BigInteger(1, digest);
+        return bigInt.toString(16);
     }
 }
